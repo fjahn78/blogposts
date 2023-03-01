@@ -1,31 +1,22 @@
 package blogposts
 
 import (
-	"io"
 	"io/fs"
-	"strings"
 )
-
-type Post struct {
-  Title string
-}
 
 func PostFromFS(filesystem fs.FS) []Post {
   dir, _ := fs.ReadDir(filesystem, ".")
 
   var posts []Post
   for _, f := range dir {
-    post := makePostFromFile(filesystem, f)
+    post := makePostFromFile(filesystem, f.Name())
     posts = append(posts, post)
   }
   return posts
 }
 
-func makePostFromFile(filesystem fs.FS, f fs.DirEntry) Post {
-	blogFile, _    := filesystem.Open(f.Name()) 
-  fileContent, _ := io.ReadAll(blogFile) 
-  title := strings.TrimPrefix(string(fileContent), "Title: ")
-  return Post{
-  	Title: title,
-  }
+func makePostFromFile(filesystem fs.FS, fileName string) Post {
+	blogFile, _    := filesystem.Open(fileName) 
+  return newPost(blogFile)
 }
+
