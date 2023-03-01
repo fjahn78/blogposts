@@ -1,13 +1,19 @@
 package blogposts
 
 import (
-	"testing/fstest"
+	"io/fs"
 )
 
 type Post struct {
   
 }
 
-func PostFromFS(fs fstest.MapFS) []Post {
-  return nil
+func PostFromFS(filesystem fs.FS) []Post {
+  dir, _ := fs.ReadDir(filesystem, ".")
+
+  var posts []Post
+  for range dir {
+    posts = append(posts, Post{})
+  }
+  return posts
 }
