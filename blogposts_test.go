@@ -13,7 +13,12 @@ func TestPostsFromFS(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		// Given
 		fileSystem := fstest.MapFS{
-			"hello-world.md":  {Data: []byte("Title: hello, world!\nDescription: What's up, world!\nTags: tdd, go")},
+			"hello-world.md":  {Data: []byte(`Title: hello, world!
+Description: What's up, world!
+Tags: tdd, go
+---
+hello, world!
+This is a test.`)},
 			"hello-world2.md": {Data: []byte("Title: Hola, mundo!\nDescription: que pasa, mundo!\nTags: tdd, go")},
 		}
 
@@ -33,6 +38,7 @@ func TestPostsFromFS(t *testing.T) {
 			Title:       "hello, world!",
 			Description: "What's up, world!",
       Tags:        []string{"tdd", "go"},
+      Body:        "hello, world!\nThis is a test.",
 		}
 
 		assertPost(t, posts[0], want)
