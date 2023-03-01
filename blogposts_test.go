@@ -4,6 +4,7 @@ import (
 	"blogposts"
 	"errors"
 	"io/fs"
+	"reflect"
 	"testing"
 	"testing/fstest"
 )
@@ -12,8 +13,8 @@ func TestPostsFromFS(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		// Given
 		fileSystem := fstest.MapFS{
-			"hello-world.md":  {Data: []byte("Title: hello, world!\nDescription: What's up, world!")},
-			"hello-world2.md": {Data: []byte("Title: Hola, mundo!\nDescription: que pasa, mundo!")},
+			"hello-world.md":  {Data: []byte("Title: hello, world!\nDescription: What's up, world!\nTags: tdd, go")},
+			"hello-world2.md": {Data: []byte("Title: Hola, mundo!\nDescription: que pasa, mundo!\nTags: tdd, go")},
 		}
 
 		// When
@@ -31,6 +32,7 @@ func TestPostsFromFS(t *testing.T) {
 		want := blogposts.Post{
 			Title:       "hello, world!",
 			Description: "What's up, world!",
+      Tags:        []string{"tdd", "go"},
 		}
 
 		assertPost(t, posts[0], want)
@@ -44,7 +46,8 @@ func TestPostsFromFS(t *testing.T) {
 }
 
 func assertPost(t *testing.T, got, want blogposts.Post) {
-	if got != want {
+  t.Helper()
+	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Expected %#v, got %#v", want, got)
 	}
 }

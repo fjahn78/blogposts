@@ -6,17 +6,19 @@ import (
 	"strings"
 )
 
+const (
+	titlePrefix = "Title: "
+	descriptionPrefix = "Description: "
+	tagsPrefix = "Tags: "
+)
+
 type Post struct {
   Title string
 	Description string
+	Tags []string
 }
 
 func newPost(blogFile io.Reader) Post {
-	// fileContent, _ := io.ReadAll(blogFile)
-	// title := strings.TrimPrefix(string(fileContent), "Title: ")
-	// return Post{
-	// 	Title: title,
-	// }
 	scanner := bufio.NewScanner(blogFile)
 
 	readLine := func(prefix string) string {
@@ -24,12 +26,14 @@ func newPost(blogFile io.Reader) Post {
 		return strings.TrimPrefix(scanner.Text(), prefix)
   }
 
-	title := readLine("Title: ")
-	description := readLine("Description: ")
+	title := readLine(titlePrefix)
+	description := readLine(descriptionPrefix)
+	tags := strings.Split(readLine(tagsPrefix), ", ")
 
 	post := Post{
 		Title:       title,
 		Description: description,
+		Tags:        tags,
 	}
 	return post
 }
