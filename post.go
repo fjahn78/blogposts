@@ -15,10 +15,8 @@ const (
 )
 
 type Post struct {
-  Title       string
-	Description string
-	Tags        []string
-	Body        string
+  Title, Description, Body string
+	Tags                     []string
 }
 
 func newPost(blogFile io.Reader) Post {
@@ -47,7 +45,10 @@ func readBody(scanner *bufio.Scanner) string {
 	scanner.Scan()
 	var buffer bytes.Buffer
 	for scanner.Scan() {
-		fmt.Fprintln(&buffer, scanner.Text())
+		_, err := fmt.Fprintln(&buffer, scanner.Text())
+		if err != nil {
+			panic(err)
+		}
 	}
 	return strings.TrimSuffix(buffer.String(), "\n")
 }
